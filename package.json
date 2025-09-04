@@ -9,7 +9,12 @@
     "lint": "next lint",
     "type-check": "tsc --noEmit",
     "test": "jest",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "git:status": "git status",
+    "git:add": "git add .",
+    "git:push": "git push",
+    "deploy:save": "git add . && git commit -m",
+    "deploy:quick": "git add . && git commit -m 'Quick update' && git push"
   },
   "keywords": [],
   "author": "",
