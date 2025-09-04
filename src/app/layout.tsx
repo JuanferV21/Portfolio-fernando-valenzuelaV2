@@ -1,8 +1,12 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Toaster } from "sonner";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
+import { SmoothScrollProvider } from "@/components/site/SmoothScroll";
+import { CommandPalette } from "@/components/site/CommandPalette";
 import "@/styles/globals.css";
 
 const inter = Inter({ 
@@ -57,6 +61,7 @@ export default function RootLayout({
   return (
     <html lang="es" className="dark" suppressHydrationWarning>
       <body className={inter.variable}>
+        <SmoothScrollProvider />
         <div className="relative min-h-screen flex flex-col">
           <Header />
           <main className="flex-1">
@@ -70,6 +75,8 @@ export default function RootLayout({
           expand={false}
           richColors
         />
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );

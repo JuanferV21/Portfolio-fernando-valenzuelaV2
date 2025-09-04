@@ -1,12 +1,18 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { motion, AnimatePresence } from "framer-motion";
+import { Menu, X } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { CommandPalette } from "./CommandPalette";
 import { cn } from "@/lib/utils";
 
 const navigation = [
   { name: "Inicio", href: "/" },
-  { name: "Acerca de", href: "/about" },
+  { name: "Acerca", href: "/about" },
   { name: "Proyectos", href: "/projects" },
   { name: "Habilidades", href: "/skills" },
   { name: "Experiencia", href: "/experience" },
@@ -16,43 +22,107 @@ const navigation = [
 
 export function Header() {
   const pathname = usePathname();
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex h-14 items-center">
-        <div className="mr-4 hidden md:flex">
-          <Link className="mr-6 flex items-center space-x-2" href="/">
-            <span className="hidden font-bold sm:inline-block">
-              Juan Fernando Valenzuela
-            </span>
+    <motion.header 
+      initial={{ y: -100 }}
+      animate={{ y: 0 }}
+      transition={{ duration: 0.6, ease: "easeOut" }}
+      className="sticky top-0 z-50 w-full border-b glass"
+    >
+      <div className="container flex h-16 items-center justify-between">
+        {/* Logo */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.2 }}
+        >
+          <Link 
+            className="flex items-center space-x-2 text-lg font-bold hover:text-primary transition-colors" 
+            href="/"
+          >
+            <span className="gradient-text">JFV</span>
           </Link>
-          <nav className="flex items-center space-x-6 text-sm font-medium">
-            {navigation.map((item) => (
+        </motion.div>
+
+        {/* Desktop Navigation */}
+        <nav className="hidden md:flex items-center space-x-1 relative">
+          {navigation.map((item, index) => (
+            <motion.div
+              key={item.href}
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 * index }}
+            >
               <Link
-                key={item.href}
                 href={item.href}
                 className={cn(
-                  "transition-colors hover:text-foreground/80",
+                  "relative px-4 py-2 text-sm font-medium transition-colors hover:text-foreground",
                   pathname === item.href
                     ? "text-foreground"
-                    : "text-foreground/60"
+                    : "text-muted-foreground"
                 )}
               >
                 {item.name}
+                {pathname === item.href && (
+                  <motion.div
+                    layoutId="nav-underline"
+                    className="absolute inset-x-1 bottom-0 h-0.5 bg-primary"
+                    transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                  />
+                )}
               </Link>
-            ))}
-          </nav>
-        </div>
-        
-        {/* Mobile menu - simplified for now */}
-        <div className="flex flex-1 items-center justify-between space-x-2 md:justify-end">
-          <div className="w-full flex-1 md:w-auto md:flex-none">
-            <Link className="flex items-center space-x-2 md:hidden" href="/">
-              <span className="font-bold">JFV</span>
-            </Link>
-          </div>
+            </motion.div>
+          ))}
+        </nav>
+
+        {/* Right section */}
+        <div className="flex items-center gap-3">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.3 }}
+          >
+            <CommandPalette />
+          </motion.div>
+
+          {/* Mobile menu */}
+          <Sheet open={isOpen} onOpenChange={setIsOpen}>
+            <SheetTrigger asChild>
+              <Button variant="ghost" size="icon" className="md:hidden">
+                <Menu className="h-5 w-5" />
+                <span className="sr-only">Toggle menu</span>
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="right" className="w-[280px]">
+              <div className="flex flex-col space-y-3 mt-8">
+                {navigation.map((item, index) => (
+                  <motion.div
+                    key={item.href}
+                    initial={{ opacity: 0, x: 50 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.1 * index }}
+                  >
+                    <Link
+                      href={item.href}
+                      className={cn(
+                        "flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors hover:bg-accent",
+                        pathname === item.href
+                          ? "bg-accent text-accent-foreground"
+                          : "text-muted-foreground hover:text-foreground"
+                      )}
+                      onClick={() => setIsOpen(false)}
+                    >
+                      {item.name}
+                    </Link>
+                  </motion.div>
+                ))}
+              </div>
+            </SheetContent>
+          </Sheet>
         </div>
       </div>
-    </header>
+    </motion.header>
   );
 }

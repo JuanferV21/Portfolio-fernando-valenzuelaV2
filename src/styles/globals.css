@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600;1,700&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -33,6 +33,22 @@
   --chart-4: 220 14% 20%;
   --chart-5: 215 20% 65%;
   --radius: 1rem;
+  
+  /* Enhanced gradients and effects */
+  --gradient-primary: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--accent)) 100%);
+  --gradient-radial: radial-gradient(circle at 50% 50%, hsl(var(--primary) / 0.1) 0%, transparent 50%);
+  --grid-pattern: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 98px,
+    hsl(var(--border)) 100px
+  ),
+  repeating-linear-gradient(
+    90deg,
+    transparent,
+    transparent 98px,
+    hsl(var(--border)) 100px
+  );
 }
 
 * {
@@ -51,35 +67,66 @@ body {
   color: hsl(var(--foreground));
   font-feature-settings: "rlig" 1, "calt" 1;
   line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* Background effects */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--grid-pattern);
+  opacity: 0.03;
+  pointer-events: none;
+  z-index: -2;
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: var(--gradient-radial);
+  opacity: 0.4;
+  pointer-events: none;
+  z-index: -1;
 }
 
 @layer base {
   h1, h2, h3, h4, h5, h6 {
     font-weight: 600;
     line-height: 1.25;
+    letter-spacing: -0.025em;
   }
   
   h1 {
-    font-size: 3rem;
-    font-weight: 700;
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 800;
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
   
   h2 {
-    font-size: 2.25rem;
+    font-size: clamp(2rem, 4vw, 2.5rem);
+    font-weight: 700;
   }
   
   h3 {
-    font-size: 1.875rem;
-  }
-  
-  h4 {
-    font-size: 1.5rem;
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-weight: 600;
   }
   
   a {
     color: hsl(var(--primary));
     text-decoration: none;
-    transition: color 0.2s ease;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   }
   
   a:hover {
@@ -89,14 +136,37 @@ body {
   :focus-visible {
     outline: 2px solid hsl(var(--ring));
     outline-offset: 2px;
+    border-radius: 4px;
   }
 }
 
 @layer components {
   .container {
-    max-width: 1200px;
+    max-width: 1400px;
     margin: 0 auto;
     padding: 0 1.5rem;
+  }
+  
+  @media (min-width: 640px) {
+    .container {
+      padding: 0 2rem;
+    }
+  }
+  
+  .section {
+    padding: 4rem 0;
+  }
+  
+  @media (min-width: 768px) {
+    .section {
+      padding: 6rem 0;
+    }
+  }
+  
+  @media (min-width: 1024px) {
+    .section {
+      padding: 8rem 0;
+    }
   }
   
   .grid-12 {
@@ -107,6 +177,7 @@ body {
   
   .prose {
     line-height: 1.75;
+    color: hsl(var(--muted-foreground));
   }
   
   .prose p {
@@ -114,15 +185,68 @@ body {
   }
   
   .gradient-text {
-    background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--accent)));
+    background: var(--gradient-primary);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+  }
+  
+  .glow {
+    box-shadow: 0 0 20px hsl(var(--primary) / 0.3);
+  }
+  
+  .glass {
+    background: hsl(var(--background) / 0.8);
+    backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid hsl(var(--border) / 0.2);
+  }
+  
+  .hover-lift {
+    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .hover-lift:hover {
+    transform: translateY(-2px);
+  }
+  
+  .scroll-indicator {
+    animation: bounce 2s infinite;
+  }
+  
+  @keyframes bounce {
+    0%, 20%, 53%, 80%, 100% {
+      transform: translate3d(0, 0, 0);
+    }
+    40%, 43% {
+      transform: translate3d(0, -8px, 0);
+    }
+    70% {
+      transform: translate3d(0, -4px, 0);
+    }
+    90% {
+      transform: translate3d(0, -2px, 0);
+    }
   }
 }
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+  
+  .animation-delay-100 {
+    animation-delay: 0.1s;
+  }
+  
+  .animation-delay-200 {
+    animation-delay: 0.2s;
+  }
+  
+  .animation-delay-300 {
+    animation-delay: 0.3s;
+  }
+  
+  .animation-delay-500 {
+    animation-delay: 0.5s;
   }
 }

@@ -1,44 +1,67 @@
+"use client";
+
 import { Metadata } from "next";
+import { motion } from "framer-motion";
+import Balancer from "react-wrap-balancer";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ContactForm } from "@/components/site/ContactForm";
+import { MotionSection, FadeUpDiv } from "@/components/site/MotionSection";
 import { Mail, MessageSquare, Phone, MapPin } from "lucide-react";
 import { profile } from "@/data/profile";
 
-export const metadata: Metadata = {
-  title: "Contacto",
-  description: "Ponte en contacto con Juan Fernando Valenzuela Solís para proyectos, colaboraciones o consultas sobre desarrollo de software.",
-};
+// export const metadata: Metadata = {
+//   title: "Contacto",
+//   description: "Ponte en contacto con Juan Fernando Valenzuela Solís para proyectos, colaboraciones o consultas sobre desarrollo de software.",
+// };
 
 export default function ContactPage() {
   return (
     <div className="container py-8 md:py-12">
       <div className="max-w-4xl mx-auto space-y-8">
         {/* Header */}
-        <div className="text-center space-y-4">
-          <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
-            Ponte en <span className="gradient-text">Contacto</span>
-          </h1>
-          <p className="text-xl text-muted-foreground">
-            ¿Tienes un proyecto en mente? ¡Me encantaría saber de ti!
-          </p>
-        </div>
+        <MotionSection className="text-center space-y-4">
+          <FadeUpDiv>
+            <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
+              <Balancer>
+                Ponte en <span className="gradient-text">Contacto</span>
+              </Balancer>
+            </h1>
+          </FadeUpDiv>
+          <FadeUpDiv delay={0.2}>
+            <p className="text-xl text-muted-foreground">
+              <Balancer>¿Tienes un proyecto en mente? ¡Me encantaría saber de ti!</Balancer>
+            </p>
+          </FadeUpDiv>
+        </MotionSection>
 
         <div className="grid gap-8 lg:grid-cols-2">
           {/* Contact Form */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <MessageSquare className="h-5 w-5 text-primary" />
-                Envíame un Mensaje
-              </CardTitle>
-              <CardDescription>
-                Completa el formulario y te responderé lo antes posible
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <ContactForm />
-            </CardContent>
-          </Card>
+          <FadeUpDiv delay={0.3}>
+            <motion.div
+              whileHover={{ y: -5 }}
+              transition={{ type: "spring", stiffness: 300, damping: 20 }}
+            >
+              <Card className="hover-glow">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <motion.div
+                      animate={{ rotate: [0, 5, -5, 0] }}
+                      transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}
+                    >
+                      <MessageSquare className="h-5 w-5 text-primary" />
+                    </motion.div>
+                    Envíame un Mensaje
+                  </CardTitle>
+                  <CardDescription>
+                    <Balancer>Completa el formulario y te responderé lo antes posible</Balancer>
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <ContactForm />
+                </CardContent>
+              </Card>
+            </motion.div>
+          </FadeUpDiv>
 
           {/* Contact Info */}
           <div className="space-y-6">
