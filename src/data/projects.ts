@@ -40,7 +40,7 @@ const projectsRaw: Omit<Project, 'slug'>[] = [
     technologies: ["C#", "WPF", ".NET 6", "Entity Framework Core", "SQL Server", "MVVM"],
     category: "csharp",
     githubUrl: "https://github.com/juanfernando/sistema-inventario-net",
-    imageUrl: "/images/projects/inventario-net.png",
+    imageUrl: "/projects/inventario-net.jpg",
     featured: true,
     completedAt: "2024-08-15"
   },
@@ -53,7 +53,7 @@ const projectsRaw: Omit<Project, 'slug'>[] = [
     category: "csharp",
     githubUrl: "https://github.com/juanfernando/api-tareas-net",
     liveUrl: "https://api-tareas.herokuapp.com/swagger",
-    imageUrl: "/images/projects/api-tareas-net.png",
+    imageUrl: "/projects/api-tareas-net.png",
     featured: true,
     completedAt: "2024-07-22"
   },
@@ -66,7 +66,7 @@ const projectsRaw: Omit<Project, 'slug'>[] = [
     category: "python",
     githubUrl: "https://github.com/juanfernando/analizador-ventas-python",
     liveUrl: "https://analizador-ventas.streamlit.app",
-    imageUrl: "/images/projects/analizador-python.png",
+    imageUrl: "/projects/analizador-python.png",
     featured: true,
     completedAt: "2024-06-10"
   },
@@ -78,7 +78,7 @@ const projectsRaw: Omit<Project, 'slug'>[] = [
     technologies: ["Python", "Selenium", "BeautifulSoup", "SQLite", "Schedule", "Flask", "SMTP"],
     category: "python",
     githubUrl: "https://github.com/juanfernando/monitor-precios-python",
-    imageUrl: "/images/projects/scraper-python.png",
+    imageUrl: "/projects/scraper-python.png",
     featured: false,
     completedAt: "2024-05-18"
   },
@@ -91,7 +91,7 @@ const projectsRaw: Omit<Project, 'slug'>[] = [
     category: "laravel",
     githubUrl: "https://github.com/juanfernando/ecommerce-laravel",
     liveUrl: "https://demo-ecommerce-laravel.herokuapp.com",
-    imageUrl: "/images/projects/ecommerce-laravel.png",
+    imageUrl: "/projects/ecommerce-laravel.png",
     featured: true,
     completedAt: "2024-04-25"
   },
@@ -103,7 +103,7 @@ const projectsRaw: Omit<Project, 'slug'>[] = [
     technologies: ["PHP", "Laravel", "MySQL", "TinyMCE", "Tailwind CSS", "Alpine.js"],
     category: "laravel",
     githubUrl: "https://github.com/juanfernando/blog-laravel",
-    imageUrl: "/images/projects/blog-laravel.png",
+    imageUrl: "/projects/blog-laravel.png",
     featured: false,
     completedAt: "2024-03-12"
   },
@@ -116,7 +116,7 @@ const projectsRaw: Omit<Project, 'slug'>[] = [
     category: "react",
     githubUrl: "https://github.com/juanfernando/dashboard-react",
     liveUrl: "https://admin-dashboard-react-ts.netlify.app",
-    imageUrl: "/images/projects/dashboard-react.png",
+    imageUrl: "/projects/dashboard-react.png",
     featured: false,
     completedAt: "2024-09-01"
   },
@@ -129,7 +129,7 @@ const projectsRaw: Omit<Project, 'slug'>[] = [
     category: "react",
     githubUrl: "https://github.com/juanfernando/todo-app-react",
     liveUrl: "https://todo-app-react-advanced.netlify.app",
-    imageUrl: "/images/projects/todo-react.png",
+    imageUrl: "/projects/todo-react.png",
     featured: false,
     completedAt: "2024-08-08"
   }

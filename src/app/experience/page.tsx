@@ -1,11 +1,11 @@
 "use client";
 
 import { Metadata } from "next";
-import { motion, Variants } from "framer-motion";
+import { motion } from "framer-motion";
 import Balancer from "react-wrap-balancer";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { MotionSection, FadeUpDiv } from "@/components/site/MotionSection";
 import { Calendar, MapPin, Building, GraduationCap, Briefcase, Code, Award } from "lucide-react";
 import { experience } from "@/data/experience";
@@ -65,53 +65,10 @@ function calculateDuration(startDate: string, endDate?: string): string {
 }
 
 export default function ExperiencePage() {
-  const sortedExperience = [...experience].sort((a, b) => {
-    const aDate = new Date(a.endDate || new Date());
-    const bDate = new Date(b.endDate || new Date());
-    return bDate.getTime() - aDate.getTime();
-  });
-
-  const timelineVariants: Variants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.2
-      }
-    }
-  };
-
-  const itemVariants: Variants = {
-    hidden: { 
-      opacity: 0, 
-      x: -50,
-      scale: 0.9
-    },
-    visible: {
-      opacity: 1,
-      x: 0,
-      scale: 1,
-      transition: {
-        duration: 0.6,
-        ease: [0.4, 0, 0.2, 1] as [number, number, number, number]
-      }
-    }
-  };
-
-  const lineVariants: Variants = {
-    hidden: { height: "0%" },
-    visible: {
-      height: "100%",
-      transition: {
-        duration: 1.5,
-        ease: [0.4, 0, 0.2, 1] as [number, number, number, number]
-      }
-    }
-  };
 
   return (
     <div className="container py-8 md:py-12">
-      <div className="max-w-4xl mx-auto space-y-8">
+      <div className="max-w-4xl mx-auto space-y-6">
         {/* Header */}
         <MotionSection className="text-center space-y-4">
           <FadeUpDiv>
@@ -130,173 +87,118 @@ export default function ExperiencePage() {
           </FadeUpDiv>
         </MotionSection>
 
-        {/* Timeline */}
-        <motion.div 
-          className="relative"
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-10%" }}
-          variants={timelineVariants}
-        >
-          {/* Animated Timeline line */}
-          <div className="absolute left-8 top-0 bottom-0 w-0.5 bg-border overflow-hidden">
-            <motion.div
-              className="w-full bg-gradient-to-b from-primary to-accent"
-              variants={lineVariants}
-            />
-          </div>
-          
-          <div className="space-y-8">
-            {sortedExperience.map((item, index) => {
-              const Icon = typeIcons[item.type];
+        {/* Experience Accordion */}
+        <FadeUpDiv delay={0.2}>
+          <Accordion type="multiple" className="space-y-4" defaultValue={["item-0", "item-1"]}>
+            {Object.entries(typeLabels).map(([type, label], groupIndex) => {
+              const groupExperience = experience.filter(item => item.type === type);
+              if (groupExperience.length === 0) return null;
+              
+              const Icon = typeIcons[type as keyof typeof typeIcons];
+              
               return (
-                <motion.div 
-                  key={item.id} 
-                  className="relative flex gap-8"
-                  variants={itemVariants}
+                <AccordionItem 
+                  key={type} 
+                  value={`item-${groupIndex}`}
+                  className="rounded-lg bg-card/20 backdrop-blur border px-4"
                 >
-                  {/* Animated Timeline dot */}
-                  <motion.div 
-                    className={`flex-shrink-0 w-16 h-16 rounded-full border-4 border-background bg-card shadow-lg flex items-center justify-center ${typeColors[item.type]} relative overflow-hidden`}
-                    whileHover={{ 
-                      scale: 1.1,
-                      boxShadow: "0 10px 25px rgba(0,0,0,0.2)"
-                    }}
-                    transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                  >
-                    <motion.div
-                      className="absolute inset-0 bg-gradient-to-br from-primary/20 to-accent/20 rounded-full"
-                      animate={{
-                        scale: [1, 1.2, 1],
-                        opacity: [0.5, 0.8, 0.5]
-                      }}
-                      transition={{
-                        duration: 3,
-                        repeat: Infinity,
-                        ease: "easeInOut",
-                        delay: index * 0.5
-                      }}
-                    />
-                    <Icon className="h-6 w-6 relative z-10" />
-                  </motion.div>
-                  
-                  {/* Content */}
-                  <motion.div
-                    className="flex-1"
-                    whileHover={{ y: -5 }}
-                    transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                  >
-                    <Card className="hover:shadow-xl transition-all duration-300 hover-glow">
-                      <CardHeader>
-                        <div className="flex flex-wrap items-start justify-between gap-2">
-                          <div className="space-y-1">
-                            <CardTitle className="text-xl">{item.title}</CardTitle>
-                            <CardDescription className="text-base font-medium">
-                              {item.organization}
-                            </CardDescription>
-                          </div>
-                          <motion.div
-                            whileHover={{ scale: 1.05 }}
-                          >
-                            <Badge variant="outline" className="gap-1">
-                              <Icon className="h-3 w-3" />
-                              {typeLabels[item.type]}
-                            </Badge>
-                          </motion.div>
-                        </div>
-                        
-                        <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
-                          <div className="flex items-center gap-1">
-                            <Calendar className="h-4 w-4" />
-                            <span>
-                              {formatDate(item.startDate)} - {item.endDate ? formatDate(item.endDate) : "Presente"}
-                            </span>
-                          </div>
-                          <div className="flex items-center gap-1">
-                            <span>•</span>
-                            <span>{calculateDuration(item.startDate, item.endDate)}</span>
-                          </div>
-                          {item.location && (
-                            <div className="flex items-center gap-1">
-                              <MapPin className="h-4 w-4" />
-                              <span>
-                                {item.location}
-                                {item.isRemote && " (Remoto)"}
-                              </span>
+                  <AccordionTrigger className="text-left hover:no-underline py-4">
+                    <div className="flex items-center gap-3">
+                      <Icon className={`h-5 w-5 ${typeColors[type as keyof typeof typeColors]}`} />
+                      <h3 className="text-lg font-semibold">{label}</h3>
+                      <Badge variant="secondary" className="text-xs">
+                        {groupExperience.length} {groupExperience.length === 1 ? 'elemento' : 'elementos'}
+                      </Badge>
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent className="pb-4">
+                    <div className="space-y-4">
+                      {groupExperience
+                        .sort((a, b) => new Date(b.endDate || new Date()).getTime() - new Date(a.endDate || new Date()).getTime())
+                        .map((item, index) => (
+                        <motion.div
+                          key={item.id}
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: index * 0.1 }}
+                          className="rounded-lg bg-card/30 backdrop-blur p-4 border hover:shadow-md transition-all duration-200"
+                        >
+                          <div className="space-y-3">
+                            {/* Header */}
+                            <div className="flex flex-wrap items-start justify-between gap-2">
+                              <div className="space-y-1">
+                                <h4 className="font-semibold text-base">{item.title}</h4>
+                                <p className="text-sm text-muted-foreground font-medium">
+                                  {item.organization}
+                                </p>
+                              </div>
+                              <div className="text-xs text-muted-foreground text-right">
+                                <div className="flex items-center gap-1">
+                                  <Calendar className="h-3 w-3" />
+                                  <span>
+                                    {formatDate(item.startDate)} - {item.endDate ? formatDate(item.endDate) : "Presente"}
+                                  </span>
+                                </div>
+                                <div className="mt-1">{calculateDuration(item.startDate, item.endDate)}</div>
+                                {item.location && (
+                                  <div className="flex items-center gap-1 mt-1">
+                                    <MapPin className="h-3 w-3" />
+                                    <span>
+                                      {item.location}
+                                      {item.isRemote && " (Remoto)"}
+                                    </span>
+                                  </div>
+                                )}
+                              </div>
                             </div>
-                          )}
-                        </div>
-                      </CardHeader>
-                      
-                      <CardContent className="space-y-4">
-                        {/* Description */}
-                        <div className="space-y-2">
-                          {item.description.map((desc, i) => (
-                            <motion.p 
-                              key={i} 
-                              className="text-muted-foreground"
-                              initial={{ opacity: 0, y: 10 }}
-                              whileInView={{ opacity: 1, y: 0 }}
-                              viewport={{ once: true }}
-                              transition={{ delay: i * 0.1 }}
-                            >
-                              {desc}
-                            </motion.p>
-                          ))}
-                        </div>
-
-                        {/* Technologies */}
-                        {item.technologies && item.technologies.length > 0 && (
-                          <div>
-                            <h4 className="text-sm font-medium mb-2">Tecnologías utilizadas</h4>
-                            <div className="flex flex-wrap gap-1">
-                              {item.technologies.map((tech, techIndex) => (
-                                <motion.div
-                                  key={tech}
-                                  initial={{ opacity: 0, scale: 0.8 }}
-                                  whileInView={{ opacity: 1, scale: 1 }}
-                                  viewport={{ once: true }}
-                                  transition={{ delay: techIndex * 0.05 }}
-                                  whileHover={{ scale: 1.05 }}
-                                >
-                                  <Badge variant="secondary" className="text-xs">
-                                    {tech}
-                                  </Badge>
-                                </motion.div>
+                            
+                            {/* Description */}
+                            <div className="space-y-2">
+                              {item.description.map((desc, i) => (
+                                <p key={i} className="text-sm text-muted-foreground">
+                                  {desc}
+                                </p>
                               ))}
                             </div>
-                          </div>
-                        )}
 
-                        {/* Achievements */}
-                        {item.achievements && item.achievements.length > 0 && (
-                          <div>
-                            <h4 className="text-sm font-medium mb-2">Logros destacados</h4>
-                            <ul className="space-y-1">
-                              {item.achievements.map((achievement, i) => (
-                                <motion.li 
-                                  key={i} 
-                                  className="text-sm text-muted-foreground flex items-start gap-2"
-                                  initial={{ opacity: 0, x: -10 }}
-                                  whileInView={{ opacity: 1, x: 0 }}
-                                  viewport={{ once: true }}
-                                  transition={{ delay: i * 0.1 }}
-                                >
-                                  <span className="text-primary mt-1">•</span>
-                                  <span>{achievement}</span>
-                                </motion.li>
-                              ))}
-                            </ul>
+                            {/* Technologies */}
+                            {item.technologies && item.technologies.length > 0 && (
+                              <div>
+                                <h5 className="text-xs font-medium mb-2 text-muted-foreground uppercase tracking-wide">Tecnologías</h5>
+                                <div className="flex flex-wrap gap-1">
+                                  {item.technologies.map((tech) => (
+                                    <Badge key={tech} variant="secondary" className="text-xs">
+                                      {tech}
+                                    </Badge>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+
+                            {/* Achievements */}
+                            {item.achievements && item.achievements.length > 0 && (
+                              <div>
+                                <h5 className="text-xs font-medium mb-2 text-muted-foreground uppercase tracking-wide">Logros</h5>
+                                <ul className="space-y-1">
+                                  {item.achievements.map((achievement, i) => (
+                                    <li key={i} className="text-xs text-muted-foreground flex items-start gap-2">
+                                      <span className="text-primary mt-1">•</span>
+                                      <span>{achievement}</span>
+                                    </li>
+                                  ))}
+                                </ul>
+                              </div>
+                            )}
                           </div>
-                        )}
-                      </CardContent>
-                    </Card>
-                  </motion.div>
-                </motion.div>
+                        </motion.div>
+                      ))}
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
               );
             })}
-          </div>
-        </motion.div>
+          </Accordion>
+        </FadeUpDiv>
 
         {/* Summary Stats */}
         <MotionSection>

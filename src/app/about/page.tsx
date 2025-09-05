@@ -3,7 +3,7 @@ import Image from "next/image";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { MapPin, Calendar, GraduationCap, Heart } from "lucide-react";
+import { MapPin, Calendar, GraduationCap, Heart, Code, Target } from "lucide-react";
 import { profile } from "@/data/profile";
 import Link from "next/link";
 
@@ -37,7 +37,7 @@ export default function AboutPage() {
 
   return (
     <div className="container py-8 md:py-12">
-      <div className="max-w-4xl mx-auto space-y-8">
+      <div className="max-w-4xl mx-auto space-y-6">
         {/* Header */}
         <div className="text-center space-y-4">
           <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
@@ -167,7 +167,10 @@ export default function AboutPage() {
                   </ul>
                 </div>
                 <div>
-                  <h4 className="font-medium text-sm mb-2">💻 Desarrollando</h4>
+                  <h4 className="font-medium text-sm mb-2 flex items-center gap-2">
+                    <Code className="h-4 w-4" />
+                    Desarrollando
+                  </h4>
                   <ul className="text-sm text-muted-foreground space-y-1">
                     <li>• Proyectos con .NET 8</li>
                     <li>• Análisis de datos con Python</li>
@@ -176,7 +179,10 @@ export default function AboutPage() {
                 </div>
               </div>
               <div>
-                <h4 className="font-medium text-sm mb-2">🚀 Próximos Objetivos</h4>
+                <h4 className="font-medium text-sm mb-2 flex items-center gap-2">
+                  <Target className="h-4 w-4" />
+                  Próximos Objetivos
+                </h4>
                 <ul className="text-sm text-muted-foreground space-y-1">
                   <li>• Certificación Azure Developer Associate</li>
                   <li>• Contribuir a proyectos open source</li>

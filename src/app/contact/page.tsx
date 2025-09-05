@@ -17,7 +17,7 @@ import { profile } from "@/data/profile";
 export default function ContactPage() {
   return (
     <div className="container py-8 md:py-12">
-      <div className="max-w-4xl mx-auto space-y-8">
+      <div className="max-w-4xl mx-auto space-y-6">
         {/* Header */}
         <MotionSection className="text-center space-y-4">
           <FadeUpDiv>

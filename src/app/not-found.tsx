@@ -9,7 +9,9 @@ export default function NotFound() {
     <div className="container py-8 md:py-12 min-h-[70vh] flex items-center justify-center">
       <Card className="max-w-md w-full text-center">
         <CardHeader className="pb-4">
-          <div className="text-6xl mb-4">🔍</div>
+          <div className="mb-4">
+            <Search className="h-16 w-16 mx-auto text-muted-foreground" />
+          </div>
           <CardTitle className="text-3xl mb-2">404</CardTitle>
           <CardDescription className="text-lg">
             La página que buscas no existe o ha sido movida.

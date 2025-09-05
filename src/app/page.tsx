@@ -83,7 +83,7 @@ export default function HomePage() {
     <div className="flex flex-col overflow-hidden">
       {/* Hero Section */}
       <motion.section 
-        className="container py-12 md:py-24 lg:py-32 relative"
+        className="container py-8 md:py-16 lg:py-24 relative"
         initial="hidden"
         animate="visible"
         variants={heroVariants}
@@ -200,7 +200,7 @@ export default function HomePage() {
       </motion.section>
 
       {/* Featured Projects */}
-      <MotionSection className="container py-12 md:py-24">
+      <MotionSection className="container py-8 md:py-16">
         <div className="space-y-6">
           <FadeUpDiv className="text-center space-y-4">
             <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
@@ -241,9 +241,10 @@ export default function HomePage() {
                       ) : (
                         <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-accent/10 flex items-center justify-center">
                           <div className="text-4xl">
-                            {project.category === "csharp" ? "💜" : 
-                             project.category === "python" ? "🐍" : 
-                             project.category === "laravel" ? "🔺" : "⚛️"}
+                            {project.category === "csharp" && <SiSharp className="text-purple-500" />}
+                            {project.category === "python" && <SiPython className="text-yellow-500" />}
+                            {project.category === "laravel" && <SiLaravel className="text-red-500" />}
+                            {project.category === "react" && <SiReact className="text-blue-500" />}
                           </div>
                         </div>
                       )}
@@ -310,7 +311,7 @@ export default function HomePage() {
       </MotionSection>
 
       {/* Tech Stack */}
-      <MotionSection className="container py-12 md:py-24 bg-gradient-to-br from-muted/30 to-muted/10">
+      <MotionSection className="container py-8 md:py-16 bg-gradient-to-br from-muted/30 to-muted/10">
         <div className="space-y-6">
           <FadeUpDiv className="text-center space-y-4">
             <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
@@ -375,7 +376,7 @@ export default function HomePage() {
       </MotionSection>
 
       {/* CTA Section */}
-      <MotionSection className="container py-12 md:py-24">
+      <MotionSection className="container py-8 md:py-16">
         <FadeUpDiv className="text-center space-y-6">
           <motion.h2 
             className="text-3xl font-bold tracking-tighter sm:text-4xl"

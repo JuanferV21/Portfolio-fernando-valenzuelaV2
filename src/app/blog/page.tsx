@@ -1,49 +1,21 @@
+"use client";
+
+import { useState } from "react";
 import { Metadata } from "next";
 import Link from "next/link";
+import { motion } from "framer-motion";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Calendar, Clock, ArrowRight } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Calendar, Clock, ArrowRight, Search, BookOpen } from "lucide-react";
+import { blogPosts, categories, getBlogPostsByCategory, getAllTags } from "@/data/blog";
 
-export const metadata: Metadata = {
-  title: "Blog",
-  description: "Artículos y reflexiones sobre desarrollo de software, tecnología y programación por Juan Fernando Valenzuela Solís.",
-};
-
-// Demo blog posts - in a real app, these would come from a CMS or markdown files
-const blogPosts = [
-  {
-    id: "introduccion-desarrollo-web-moderno",
-    title: "Introducción al Desarrollo Web Moderno con React y TypeScript",
-    excerpt: "Una guía completa para comenzar en el desarrollo web moderno utilizando las mejores herramientas y prácticas actuales.",
-    content: `
-      <p>El desarrollo web ha evolucionado significativamente en los últimos años. En este artículo, exploraremos las tecnologías fundamentales que todo desarrollador web moderno debe conocer.</p>
-      
-      <h2>¿Por qué React y TypeScript?</h2>
-      <p>React se ha convertido en una de las bibliotecas más populares para construir interfaces de usuario, mientras que TypeScript añade tipado estático a JavaScript, mejorando la calidad del código y la experiencia de desarrollo.</p>
-      
-      <h2>Configuración del Entorno</h2>
-      <p>Para comenzar, necesitarás tener instalado Node.js en tu sistema. Luego puedes crear un nuevo proyecto con:</p>
-      <pre><code>npx create-react-app mi-app --template typescript</code></pre>
-      
-      <h2>Conceptos Fundamentales</h2>
-      <ul>
-        <li>Componentes funcionales y hooks</li>
-        <li>Manejo de estado con useState y useEffect</li>
-        <li>Tipado con interfaces y tipos</li>
-        <li>Mejores prácticas de estructura de proyectos</li>
-      </ul>
-      
-      <h2>Conclusión</h2>
-      <p>React con TypeScript ofrece una base sólida para desarrollar aplicaciones web escalables y mantenibles. La curva de aprendizaje puede ser empinada al principio, pero los beneficios a largo plazo son enormes.</p>
-    `,
-    author: "Juan Fernando Valenzuela",
-    publishedAt: "2024-08-15",
-    readTime: "8 min",
-    tags: ["React", "TypeScript", "Web Development", "JavaScript"],
-    featured: true
-  },
-];
+// export const metadata: Metadata = {
+//   title: "Blog",
+//   description: "Artículos y reflexiones sobre desarrollo de software, tecnología y programación por Juan Fernando Valenzuela Solís.",
+// };
 
 function formatDate(dateString: string): string {
   const date = new Date(dateString);
@@ -55,9 +27,25 @@ function formatDate(dateString: string): string {
 }
 
 export default function BlogPage() {
+  const [selectedCategory, setSelectedCategory] = useState<string>("all");
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const filteredPosts = blogPosts.filter(post => {
+    const matchesCategory = selectedCategory === "all" || 
+      post.category.toLowerCase().replace(" ", "-") === selectedCategory;
+    const matchesSearch = searchQuery === "" || 
+      post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      post.excerpt.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      post.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()));
+    
+    return matchesCategory && matchesSearch;
+  });
+
+  const allTags = getAllTags();
+
   return (
     <div className="container py-8 md:py-12">
-      <div className="max-w-4xl mx-auto space-y-8">
+      <div className="max-w-4xl mx-auto space-y-6">
         {/* Header */}
         <div className="text-center space-y-4">
           <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
@@ -68,135 +56,201 @@ export default function BlogPage() {
           </p>
         </div>
 
-        {/* Coming Soon Notice */}
-        <Card className="border-dashed">
-          <CardContent className="text-center py-12">
-            <div className="text-6xl mb-4">🚧</div>
-            <h3 className="text-xl font-semibold mb-2">Blog en Construcción</h3>
-            <p className="text-muted-foreground max-w-md mx-auto">
-              Estoy trabajando en crear contenido de calidad sobre desarrollo web, 
-              análisis de datos y mis experiencias en tecnología. ¡Próximamente habrá más artículos!
-            </p>
-          </CardContent>
-        </Card>
+        {/* Search */}
+        <div className="max-w-md mx-auto">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder="Buscar artículos..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-10"
+            />
+          </div>
+        </div>
 
-        {/* Demo Article */}
-        {blogPosts.map((post) => (
-          <Card key={post.id} className="overflow-hidden">
-            {post.featured && (
-              <div className="bg-primary/10 px-4 py-2">
-                <Badge>Artículo Destacado</Badge>
-              </div>
-            )}
-            <CardHeader>
-              <div className="space-y-2">
-                <CardTitle className="text-2xl hover:text-primary transition-colors cursor-pointer">
-                  {post.title}
-                </CardTitle>
-                <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
-                  <div className="flex items-center gap-1">
-                    <Calendar className="h-4 w-4" />
-                    <span>{formatDate(post.publishedAt)}</span>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <Clock className="h-4 w-4" />
-                    <span>{post.readTime} de lectura</span>
-                  </div>
-                </div>
-                <CardDescription className="text-base">
-                  {post.excerpt}
-                </CardDescription>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {/* Tags */}
-                <div className="flex flex-wrap gap-2">
-                  {post.tags.map((tag) => (
-                    <Badge key={tag} variant="secondary" className="text-xs">
-                      {tag}
-                    </Badge>
+        {/* Category Tabs */}
+        <Tabs value={selectedCategory} onValueChange={setSelectedCategory} className="w-full">
+          <TabsList className="grid w-full max-w-2xl mx-auto grid-cols-4 relative">
+            <motion.div
+              className="absolute top-0 left-0 h-full bg-primary rounded-md z-0"
+              layoutId="blog-tabs-underline"
+              initial={false}
+              animate={{ 
+                x: selectedCategory === "all" ? 0 : 
+                   selectedCategory === "frontend" ? "100%" :
+                   selectedCategory === "backend" ? "200%" : "300%",
+                width: "25%"
+              }}
+              transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+            />
+            {categories.map((category) => (
+              <TabsTrigger 
+                key={category.id} 
+                value={category.id}
+                className="relative z-10 data-[state=active]:text-white"
+              >
+                <span className="flex items-center gap-2">
+                  {category.label}
+                  <Badge variant="secondary" className="text-xs">
+                    {category.count}
+                  </Badge>
+                </span>
+              </TabsTrigger>
+            ))}
+          </TabsList>
+          
+          {/* Tab Content */}
+          {categories.map((category) => {
+            const categoryPosts = category.id === "all" 
+              ? filteredPosts 
+              : filteredPosts.filter(p => p.category.toLowerCase().replace(" ", "-") === category.id);
+            
+            return (
+              <TabsContent key={category.id} value={category.id} className="mt-6">
+                <div className="space-y-6">
+                  {categoryPosts.map((post, index) => (
+                    <motion.div
+                      key={post.id}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: index * 0.1 }}
+                    >
+                      <Card className="overflow-hidden hover:shadow-lg transition-all duration-300">
+                        {post.featured && (
+                          <div className="bg-primary/10 px-4 py-2">
+                            <Badge>Artículo Destacado</Badge>
+                          </div>
+                        )}
+                        <CardHeader>
+                          <div className="space-y-3">
+                            <CardTitle className="text-xl hover:text-primary transition-colors cursor-pointer">
+                              <Link href={`/blog/${post.slug}`}>
+                                {post.title}
+                              </Link>
+                            </CardTitle>
+                            <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
+                              <div className="flex items-center gap-1">
+                                <Calendar className="h-4 w-4" />
+                                <span>{formatDate(post.publishedAt)}</span>
+                              </div>
+                              <div className="flex items-center gap-1">
+                                <Clock className="h-4 w-4" />
+                                <span>{post.readTime} de lectura</span>
+                              </div>
+                              <div className="flex items-center gap-1">
+                                <BookOpen className="h-4 w-4" />
+                                <span>{post.category}</span>
+                              </div>
+                            </div>
+                            <CardDescription className="text-base">
+                              {post.excerpt}
+                            </CardDescription>
+                          </div>
+                        </CardHeader>
+                        <CardContent>
+                          <div className="space-y-4">
+                            {/* Tags */}
+                            <div className="flex flex-wrap gap-2">
+                              {post.tags.slice(0, 4).map((tag) => (
+                                <Badge key={tag} variant="secondary" className="text-xs">
+                                  {tag}
+                                </Badge>
+                              ))}
+                              {post.tags.length > 4 && (
+                                <Badge variant="outline" className="text-xs">
+                                  +{post.tags.length - 4}
+                                </Badge>
+                              )}
+                            </div>
+                            
+                            <Button asChild className="w-full sm:w-auto">
+                              <Link href={`/blog/${post.slug}`}>
+                                Leer Artículo Completo
+                                <ArrowRight className="ml-2 h-4 w-4" />
+                              </Link>
+                            </Button>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </motion.div>
                   ))}
                 </div>
-                
-                {/* Content preview */}
-                <div 
-                  className="prose prose-sm max-w-none line-clamp-3 text-muted-foreground"
-                  dangerouslySetInnerHTML={{ 
-                    __html: post.content.replace(/<[^>]*>/g, '').substring(0, 300) + '...'
-                  }}
-                />
-                
-                <Button variant="outline" className="w-full sm:w-auto">
-                  Leer Artículo Completo
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+              </TabsContent>
+            );
+          })}
+        </Tabs>
 
-        {/* Newsletter Signup */}
-        <Card>
-          <CardHeader className="text-center">
-            <CardTitle>Mantente Actualizado</CardTitle>
-            <CardDescription>
-              Suscríbete para recibir notificaciones cuando publique nuevos artículos
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="text-center">
-            <div className="max-w-md mx-auto space-y-4">
-              <p className="text-sm text-muted-foreground">
-                Por ahora, puedes seguirme en mis redes sociales para estar al tanto 
-                de mis últimos proyectos y reflexiones sobre tecnología.
-              </p>
-              <div className="flex justify-center gap-4">
-                <Button asChild variant="outline">
-                  <Link href="https://github.com/juanfernando" target="_blank">
-                    GitHub
-                  </Link>
-                </Button>
-                <Button asChild variant="outline">
-                  <Link href="https://linkedin.com/in/juanfernando" target="_blank">
-                    LinkedIn
-                  </Link>
-                </Button>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+        {/* No results */}
+        {filteredPosts.length === 0 && (
+          <div className="text-center py-8">
+            <BookOpen className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
+            <h3 className="text-xl font-semibold mb-2">No se encontraron artículos</h3>
+            <p className="text-muted-foreground">
+              Intenta con otros términos de búsqueda o selecciona una categoría diferente.
+            </p>
+            <Button 
+              onClick={() => {
+                setSearchQuery("");
+                setSelectedCategory("all");
+              }}
+              variant="outline"
+              className="mt-4"
+            >
+              Limpiar filtros
+            </Button>
+          </div>
+        )}
 
-        {/* Topics Preview */}
+        {/* Popular Tags */}
         <Card>
           <CardHeader>
-            <CardTitle>Próximos Temas</CardTitle>
+            <CardTitle>Tags Populares</CardTitle>
             <CardDescription>
-              Algunos de los temas que planeo cubrir en futuros artículos
+              Explora artículos por temas específicos
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="grid gap-4 sm:grid-cols-2">
-              <div>
-                <h4 className="font-medium mb-2">🔧 Desarrollo Técnico</h4>
-                <ul className="text-sm text-muted-foreground space-y-1">
-                  <li>• Patrones de diseño en C#</li>
-                  <li>• Optimización de consultas SQL</li>
-                  <li>• Testing automatizado</li>
-                  <li>• Arquitectura de microservicios</li>
-                </ul>
-              </div>
-              <div>
-                <h4 className="font-medium mb-2">💡 Experiencias y Aprendizajes</h4>
-                <ul className="text-sm text-muted-foreground space-y-1">
-                  <li>• Mi transición a desarrollo full-stack</li>
-                  <li>• Lecciones de proyectos freelance</li>
-                  <li>• Herramientas que me cambiaron la vida</li>
-                  <li>• Balance estudio-trabajo</li>
-                </ul>
-              </div>
+            <div className="flex flex-wrap gap-2">
+              {allTags.slice(0, 10).map(({ tag, count }) => (
+                <Badge 
+                  key={tag} 
+                  variant="outline" 
+                  className="cursor-pointer hover:bg-primary hover:text-primary-foreground transition-colors"
+                  onClick={() => setSearchQuery(tag)}
+                >
+                  {tag} ({count})
+                </Badge>
+              ))}
             </div>
           </CardContent>
         </Card>
+
+        {/* Blog Stats */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4 border-t">
+          <div className="text-center">
+            <div className="text-2xl font-bold text-primary">{blogPosts.length}</div>
+            <div className="text-sm text-muted-foreground">Artículos Totales</div>
+          </div>
+          <div className="text-center">
+            <div className="text-2xl font-bold text-primary">
+              {blogPosts.filter(p => p.category === "Frontend").length}
+            </div>
+            <div className="text-sm text-muted-foreground">Frontend</div>
+          </div>
+          <div className="text-center">
+            <div className="text-2xl font-bold text-primary">
+              {blogPosts.filter(p => p.category === "Backend").length}
+            </div>
+            <div className="text-sm text-muted-foreground">Backend</div>
+          </div>
+          <div className="text-center">
+            <div className="text-2xl font-bold text-primary">
+              {blogPosts.filter(p => p.featured).length}
+            </div>
+            <div className="text-sm text-muted-foreground">Destacados</div>
+          </div>
+        </div>
       </div>
     </div>
   );

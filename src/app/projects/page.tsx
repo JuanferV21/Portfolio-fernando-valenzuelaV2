@@ -47,7 +47,7 @@ export default function ProjectsPage() {
 
   return (
     <div className="container py-8 md:py-12">
-      <div className="space-y-8">
+      <div className="space-y-6">
         {/* Header */}
         <div className="text-center space-y-4">
           <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
@@ -76,8 +76,8 @@ export default function ProjectsPage() {
         <Tabs value={selectedCategory} onValueChange={setSelectedCategory} className="w-full">
           <TabsList className="grid w-full max-w-2xl mx-auto grid-cols-5 relative">
             <motion.div
-              className="absolute top-0 left-0 h-full bg-primary/10 rounded-md z-0"
-              layoutId="category-indicator"
+              className="absolute top-0 left-0 h-full bg-primary rounded-md z-0"
+              layoutId="projects-tabs-underline"
               initial={false}
               animate={{ 
                 x: selectedCategory === "all" ? 0 : 
@@ -92,7 +92,7 @@ export default function ProjectsPage() {
               <TabsTrigger 
                 key={category.id} 
                 value={category.id}
-                className="relative z-10"
+                className="relative z-10 data-[state=active]:text-white"
               >
                 <span className="flex items-center gap-2">
                   {category.label}
@@ -103,118 +103,130 @@ export default function ProjectsPage() {
               </TabsTrigger>
             ))}
           </TabsList>
-        </Tabs>
-
-        {/* Projects Grid */}
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {filteredProjects.map((project, index) => {
-            const IconComponent = categoryIcons[project.category].icon;
-            const iconColor = categoryIcons[project.category].color;
+          
+          {/* Tab Content */}
+          {categories.map((category) => {
+            const categoryProjects = category.id === "all" 
+              ? filteredProjects 
+              : filteredProjects.filter(p => p.category === category.id);
             
             return (
-              <motion.div
-                key={project.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-                whileHover={shouldReduceMotion ? {} : { y: -5 }}
-              >
-                <Card className="overflow-hidden group hover:shadow-xl transition-all duration-300 hover-glow h-full">
-                  <Link href={`/projects/${project.slug}`}>
-                    <div className="aspect-video bg-muted relative overflow-hidden">
-                      {project.imageUrl ? (
-                        <>
-                          <Image
-                            src={project.imageUrl}
-                            alt={project.title}
-                            fill
-                            className="object-cover group-hover:scale-105 transition-transform duration-300"
-                          />
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                        </>
-                      ) : (
-                        <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-accent/10 flex items-center justify-center">
-                          <IconComponent className={`text-6xl ${iconColor}`} />
-                        </div>
-                      )}
-                      {project.featured && (
-                        <Badge className="absolute top-2 right-2">
-                          Destacado
-                        </Badge>
-                      )}
-                    </div>
-                  </Link>
-              <CardHeader className="pb-4">
-                <div className="space-y-2">
-                  <CardTitle className="line-clamp-2 group-hover:text-primary transition-colors">
-                    {project.title}
-                  </CardTitle>
-                  <CardDescription className="line-clamp-3">
-                    {project.description}
-                  </CardDescription>
-                </div>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex flex-wrap gap-1">
-                  {project.technologies.slice(0, 4).map((tech) => (
-                    <Badge key={tech} variant="secondary" className="text-xs">
-                      {tech}
-                    </Badge>
-                  ))}
-                  {project.technologies.length > 4 && (
-                    <Badge variant="outline" className="text-xs">
-                      +{project.technologies.length - 4}
-                    </Badge>
-                  )}
-                </div>
-                
-                <div className="space-y-2">
-                  <Button asChild size="sm" className="w-full">
-                    <Link href={`/projects/${project.slug}`}>
-                      Ver Detalles
-                    </Link>
-                  </Button>
+              <TabsContent key={category.id} value={category.id} className="mt-8">
+                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                  {categoryProjects.map((project, index) => {
+                  const IconComponent = categoryIcons[project.category].icon;
+                  const iconColor = categoryIcons[project.category].color;
                   
-                  <div className="flex gap-2">
-                    {project.githubUrl && (
-                      <Button asChild size="sm" variant="outline" className="flex-1">
-                        <Link 
-                          href={project.githubUrl} 
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                          className="gap-2"
-                        >
-                          <Github className="h-4 w-4" />
-                          Código
+                  return (
+                    <motion.div
+                      key={project.id}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: index * 0.1 }}
+                      whileHover={shouldReduceMotion ? {} : { y: -5 }}
+                    >
+                      <Card className="overflow-hidden group hover:shadow-xl transition-all duration-300 hover-glow h-full">
+                        <Link href={`/projects/${project.slug}`}>
+                          <div className="aspect-video bg-muted relative overflow-hidden">
+                            {project.imageUrl ? (
+                              <>
+                                <Image
+                                  src={project.imageUrl}
+                                  alt={project.title}
+                                  fill
+                                  className="object-cover group-hover:scale-105 transition-transform duration-300"
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                              </>
+                            ) : (
+                              <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-accent/10 flex items-center justify-center">
+                                <IconComponent className={`text-6xl ${iconColor}`} />
+                              </div>
+                            )}
+                            {project.featured && (
+                              <Badge className="absolute top-2 right-2">
+                                Destacado
+                              </Badge>
+                            )}
+                          </div>
                         </Link>
-                      </Button>
-                    )}
-                    {project.liveUrl && (
-                      <Button asChild size="sm" variant="outline" className="flex-1">
-                        <Link 
-                          href={project.liveUrl} 
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                          className="gap-2"
-                        >
-                          <ExternalLink className="h-4 w-4" />
-                          Demo
-                        </Link>
-                      </Button>
-                    )}
-                  </div>
+                        <CardHeader className="pb-4">
+                          <div className="space-y-2">
+                            <CardTitle className="line-clamp-2 group-hover:text-primary transition-colors">
+                              {project.title}
+                            </CardTitle>
+                            <CardDescription className="line-clamp-3">
+                              {project.description}
+                            </CardDescription>
+                          </div>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                          <div className="flex flex-wrap gap-1">
+                            {project.technologies.slice(0, 4).map((tech) => (
+                              <Badge key={tech} variant="secondary" className="text-xs">
+                                {tech}
+                              </Badge>
+                            ))}
+                            {project.technologies.length > 4 && (
+                              <Badge variant="outline" className="text-xs">
+                                +{project.technologies.length - 4}
+                              </Badge>
+                            )}
+                          </div>
+                          
+                          <div className="space-y-2">
+                            <Button asChild size="sm" className="w-full">
+                              <Link href={`/projects/${project.slug}`}>
+                                Ver Detalles
+                              </Link>
+                            </Button>
+                            
+                            <div className="flex gap-2">
+                              {project.githubUrl && (
+                                <Button asChild size="sm" variant="outline" className="flex-1">
+                                  <Link 
+                                    href={project.githubUrl} 
+                                    target="_blank" 
+                                    rel="noopener noreferrer"
+                                    className="gap-2"
+                                  >
+                                    <Github className="h-4 w-4" />
+                                    Código
+                                  </Link>
+                                </Button>
+                              )}
+                              {project.liveUrl && (
+                                <Button asChild size="sm" variant="outline" className="flex-1">
+                                  <Link 
+                                    href={project.liveUrl} 
+                                    target="_blank" 
+                                    rel="noopener noreferrer"
+                                    className="gap-2"
+                                  >
+                                    <ExternalLink className="h-4 w-4" />
+                                    Demo
+                                  </Link>
+                                </Button>
+                              )}
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </motion.div>
+                  );
+                  })}
                 </div>
-                </CardContent>
-              </Card>
-            </motion.div>
-            )
+              </TabsContent>
+            );
           })}
-        </div>
+        </Tabs>
 
         {/* No results */}
         {filteredProjects.length === 0 && (
-          <div className="text-center py-12">
-            <div className="text-6xl mb-4">🔍</div>
+          <div className="text-center py-8">
+            <div className="mb-4">
+              <Search className="h-16 w-16 mx-auto text-muted-foreground" />
+            </div>
             <h3 className="text-xl font-semibold mb-2">No se encontraron proyectos</h3>
             <p className="text-muted-foreground">
               Intenta con otros términos de búsqueda o selecciona una categoría diferente.

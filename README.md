@@ -112,16 +112,16 @@ pnpm type-check
 pnpm lint
 ```
 
-## 🚀 Deployment en Vercel
+## 🚀 Deployment
 
-### Deploy Automático (Recomendado)
+### 🔥 Vercel (Recomendado)
 
+#### Deploy Automático
 1. Conecta tu repositorio en [Vercel](https://vercel.com)
 2. Las configuraciones se detectarán automáticamente
 3. Configura las variables de entorno en el panel de Vercel
 
-### Deploy Manual
-
+#### Deploy Manual
 ```bash
 # Instalar Vercel CLI
 npm i -g vercel
@@ -133,8 +133,7 @@ vercel
 vercel --prod
 ```
 
-### Configurar Variables en Vercel
-
+#### Configurar Variables en Vercel
 ```bash
 # Configurar variables de entorno
 vercel env add SITE_URL production
@@ -142,29 +141,190 @@ vercel env add RESEND_API_KEY production
 vercel env add NEXT_PUBLIC_HAS_RESEND_API production
 ```
 
+### ⚡ Netlify
+
+```bash
+# Instalar Netlify CLI
+npm i -g netlify-cli
+
+# Deploy
+netlify deploy
+
+# Deploy a producción
+netlify deploy --prod
+```
+
+**Build Settings:**
+- Build Command: `pnpm build`
+- Publish Directory: `.next`
+- Node Version: `18.17.0`
+
+### 🐳 Docker
+
+```dockerfile
+# Dockerfile
+FROM node:18-alpine
+
+WORKDIR /app
+
+# Install pnpm
+RUN corepack enable pnpm
+
+# Copy package files
+COPY package*.json pnpm-lock.yaml ./
+
+# Install dependencies
+RUN pnpm install --frozen-lockfile
+
+# Copy source code
+COPY . .
+
+# Build application
+RUN pnpm build
+
+EXPOSE 3000
+
+CMD ["pnpm", "start"]
+```
+
+```bash
+# Build Docker image
+docker build -t portfolio-v2 .
+
+# Run container
+docker run -p 3000:3000 -e SITE_URL=https://yourdomain.com portfolio-v2
+```
+
+### 🌐 Static Export (GitHub Pages, S3, CDN)
+
+Para deployment estático, actualiza `next.config.js`:
+
+```javascript
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  output: 'export',
+  images: {
+    unoptimized: true
+  },
+  trailingSlash: true,
+}
+
+module.exports = nextConfig
+```
+
+```bash
+# Build static files
+pnpm build
+
+# Output estará en ./out/
+```
+
+## 🏗️ Configuración del Entorno de Desarrollo
+
+### IDEs Recomendados
+
+**Visual Studio Code** con las siguientes extensiones:
+- TypeScript and JavaScript Language Features
+- Tailwind CSS IntelliSense  
+- ES7+ React/Redux/React-Native snippets
+- Prettier - Code formatter
+- ESLint
+- Auto Rename Tag
+
+**Configuración VSCode (`.vscode/settings.json`):**
+```json
+{
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "emmet.includeLanguages": {
+    "typescript": "html",
+    "typescriptreact": "html"
+  },
+  "tailwindCSS.experimental.classRegex": [
+    "cn\\(([^)]*)\\)",
+    ["cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"]
+  ]
+}
+```
+
+### Scripts Disponibles
+
+```bash
+# Desarrollo
+pnpm dev              # Servidor de desarrollo
+pnpm dev:turbo        # Desarrollo con Turbopack
+
+# Build y producción
+pnpm build            # Build para producción
+pnpm start            # Servidor de producción
+pnpm preview          # Preview del build local
+
+# Calidad de código
+pnpm lint             # ESLint
+pnpm lint:fix         # Arreglar errores de ESLint
+pnpm type-check       # Verificar tipos TypeScript
+pnpm format           # Formatear código con Prettier
+
+# Testing
+pnpm test             # Ejecutar tests
+pnpm test:watch       # Tests en modo watch
+pnpm test:coverage    # Coverage report
+
+# Utilidades
+pnpm clean            # Limpiar cache
+pnpm analyze          # Analizar bundle size
+```
+
 ## 📁 Estructura del Proyecto
 
 ```
 src/
-├── app/                  # App Router pages
-│   ├── about/           # Página Acerca de
-│   ├── blog/            # Blog (placeholder)
-│   ├── contact/         # Formulario de contacto
-│   ├── experience/      # Experiencia profesional
-│   ├── legal/          # Páginas legales
-│   ├── projects/       # Portafolio de proyectos
-│   ├── skills/         # Habilidades técnicas
-│   └── layout.tsx      # Layout principal
+├── app/                    # App Router pages
+│   ├── about/             # Página Acerca de
+│   ├── blog/              # Blog con MDX + búsqueda
+│   │   └── [slug]/        # Artículos individuales
+│   ├── contact/           # Formulario de contacto
+│   │   └── actions.ts     # Server Actions
+│   ├── experience/        # Experiencia con Accordion
+│   ├── legal/            # Páginas legales
+│   │   └── privacy/       # Política de privacidad
+│   ├── projects/         # Portafolio de proyectos
+│   │   └── [slug]/        # Proyectos individuales
+│   ├── skills/           # Habilidades con React Icons
+│   ├── globals.css       # Estilos globales
+│   ├── layout.tsx        # Layout principal
+│   ├── loading.tsx       # Loading UI
+│   ├── not-found.tsx     # Página 404
+│   ├── robots.ts         # Robots.txt generado
+│   └── sitemap.ts        # Sitemap generado
 ├── components/
-│   ├── site/           # Componentes del sitio
-│   └── ui/             # Componentes shadcn/ui
-├── data/               # Datos del perfil
-│   ├── profile.ts      # Información personal
-│   ├── projects.ts     # Proyectos destacados
-│   ├── skills.ts       # Habilidades técnicas
-│   └── experience.ts   # Experiencia profesional
-├── lib/                # Utilidades
-└── styles/             # Estilos globales
+│   ├── site/             # Componentes específicos
+│   │   ├── ContactForm.tsx
+│   │   ├── Footer.tsx
+│   │   ├── Header.tsx
+│   │   ├── MotionSection.tsx
+│   │   └── SmoothScroll.tsx
+│   └── ui/               # Componentes shadcn/ui
+│       ├── accordion.tsx
+│       ├── badge.tsx
+│       ├── button.tsx
+│       ├── card.tsx
+│       ├── input.tsx
+│       ├── tabs.tsx
+│       └── ...
+├── data/                 # Datos estructurados
+│   ├── blog.ts          # Artículos de blog
+│   ├── experience.ts    # Experiencia profesional  
+│   ├── profile.ts       # Información personal
+│   ├── projects.ts      # Proyectos destacados
+│   └── skills.ts        # Habilidades técnicas
+├── hooks/               # Custom hooks
+│   └── useReducedMotion.ts
+├── lib/                 # Utilidades y configuración
+│   ├── fonts.ts         # Configuración de fuentes
+│   └── utils.ts         # Funciones utility
+└── styles/              # Estilos adicionales
+    └── globals.css      # CSS global
 ```
 
 ## 🎨 Personalización
