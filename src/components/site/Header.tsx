@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
@@ -44,6 +45,16 @@ export function Header() {
             className="flex items-center space-x-2 text-lg font-bold hover:text-primary transition-colors" 
             href="/"
           >
+            {/* Uncomment to use profile photo in header */}
+            {/* <div className="w-8 h-8 rounded-full overflow-hidden border border-primary/20">
+              <Image
+                src="/images/profile/profile-photo.jpg"
+                alt="JFV"
+                width={32}
+                height={32}
+                className="object-cover w-full h-full"
+              />
+            </div> */}
             <span className="gradient-text">JFV</span>
           </Link>
         </motion.div>

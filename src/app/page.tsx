@@ -181,13 +181,18 @@ export default function HomePage() {
               {/* Static background gradient */}
               <div className="w-72 h-72 md:w-80 md:h-80 bg-gradient-to-br from-primary/10 to-accent/10 rounded-full blur-2xl absolute inset-0" />
               <motion.div 
-                className="relative w-72 h-72 md:w-80 md:h-80 bg-card/50 backdrop-blur-sm border rounded-full flex items-center justify-center hover-lift"
+                className="relative w-72 h-72 md:w-80 md:h-80 bg-card/50 backdrop-blur-sm border rounded-full overflow-hidden hover-lift"
                 whileHover={shouldReduceMotion ? {} : { scale: 1.02 }}
                 transition={{ type: "spring", stiffness: 300, damping: 20 }}
               >
-                <div className="text-6xl md:text-7xl">
-                  👨‍💻
-                </div>
+                <Image
+                  src="/images/profile/profile-photo.jpg"
+                  alt="Juan Fernando Valenzuela - Desarrollador Full Stack"
+                  fill
+                  className="object-cover"
+                  priority
+                  sizes="(max-width: 768px) 288px, 320px"
+                />
               </motion.div>
             </div>
           </motion.div>

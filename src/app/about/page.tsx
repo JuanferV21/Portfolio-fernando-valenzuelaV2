@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import Image from "next/image";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -54,9 +55,15 @@ export default function AboutPage() {
             <Card>
               <CardContent className="p-6">
                 <div className="text-center space-y-4">
-                  {/* Avatar placeholder */}
-                  <div className="w-32 h-32 mx-auto bg-gradient-to-br from-primary to-accent rounded-full flex items-center justify-center text-4xl">
-                    👨‍💻
+                  {/* Avatar */}
+                  <div className="w-32 h-32 mx-auto rounded-full overflow-hidden border-2 border-primary/20">
+                    <Image
+                      src="/images/profile/profile-photo.jpg"
+                      alt="Juan Fernando Valenzuela"
+                      width={128}
+                      height={128}
+                      className="object-cover w-full h-full"
+                    />
                   </div>
                   <div>
                     <h3 className="text-xl font-semibold">{profile.name}</h3>
