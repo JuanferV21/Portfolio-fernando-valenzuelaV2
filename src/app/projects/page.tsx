@@ -3,11 +3,16 @@
 import { useState } from "react";
 import { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
+import { motion } from "framer-motion";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ExternalLink, Github, Search } from "lucide-react";
+import { SiSharp, SiPython, SiLaravel, SiReact } from "react-icons/si";
+import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { projects, Project } from "@/data/projects";
 
 const categories = [
@@ -18,16 +23,17 @@ const categories = [
   { id: "react", label: "React", count: projects.filter(p => p.category === "react").length },
 ];
 
-const categoryIcons: Record<Project["category"], string> = {
-  csharp: "💜",
-  python: "🐍",
-  laravel: "🔺",
-  react: "⚛️"
+const categoryIcons: Record<Project["category"], { icon: React.ComponentType<any>, color: string }> = {
+  csharp: { icon: SiSharp, color: "text-purple-500" },
+  python: { icon: SiPython, color: "text-yellow-500" },
+  laravel: { icon: SiLaravel, color: "text-red-500" },
+  react: { icon: SiReact, color: "text-blue-500" }
 };
 
 export default function ProjectsPage() {
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState("");
+  const shouldReduceMotion = useReducedMotion();
 
   const filteredProjects = projects.filter(project => {
     const matchesCategory = selectedCategory === "all" || project.category === selectedCategory;
@@ -67,38 +73,77 @@ export default function ProjectsPage() {
         </div>
 
         {/* Category Tabs */}
-        <div className="flex flex-wrap justify-center gap-2">
-          {categories.map((category) => (
-            <Button
-              key={category.id}
-              variant={selectedCategory === category.id ? "default" : "outline"}
-              onClick={() => setSelectedCategory(category.id)}
-              className="gap-2"
-            >
-              {category.label}
-              <Badge variant="secondary" className="ml-1">
-                {category.count}
-              </Badge>
-            </Button>
-          ))}
-        </div>
+        <Tabs value={selectedCategory} onValueChange={setSelectedCategory} className="w-full">
+          <TabsList className="grid w-full max-w-2xl mx-auto grid-cols-5 relative">
+            <motion.div
+              className="absolute top-0 left-0 h-full bg-primary/10 rounded-md z-0"
+              layoutId="category-indicator"
+              initial={false}
+              animate={{ 
+                x: selectedCategory === "all" ? 0 : 
+                   selectedCategory === "csharp" ? "100%" :
+                   selectedCategory === "python" ? "200%" :
+                   selectedCategory === "laravel" ? "300%" : "400%",
+                width: "20%"
+              }}
+              transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+            />
+            {categories.map((category) => (
+              <TabsTrigger 
+                key={category.id} 
+                value={category.id}
+                className="relative z-10"
+              >
+                <span className="flex items-center gap-2">
+                  {category.label}
+                  <Badge variant="secondary" className="text-xs">
+                    {category.count}
+                  </Badge>
+                </span>
+              </TabsTrigger>
+            ))}
+          </TabsList>
+        </Tabs>
 
         {/* Projects Grid */}
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {filteredProjects.map((project) => (
-            <Card key={project.id} className="overflow-hidden group hover:shadow-lg transition-all duration-300">
-              <div className="aspect-video bg-muted relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-accent/10 flex items-center justify-center">
-                  <div className="text-5xl">
-                    {categoryIcons[project.category]}
-                  </div>
-                </div>
-                {project.featured && (
-                  <Badge className="absolute top-2 right-2">
-                    Destacado
-                  </Badge>
-                )}
-              </div>
+          {filteredProjects.map((project, index) => {
+            const IconComponent = categoryIcons[project.category].icon;
+            const iconColor = categoryIcons[project.category].color;
+            
+            return (
+              <motion.div
+                key={project.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1 }}
+                whileHover={shouldReduceMotion ? {} : { y: -5 }}
+              >
+                <Card className="overflow-hidden group hover:shadow-xl transition-all duration-300 hover-glow h-full">
+                  <Link href={`/projects/${project.slug}`}>
+                    <div className="aspect-video bg-muted relative overflow-hidden">
+                      {project.imageUrl ? (
+                        <>
+                          <Image
+                            src={project.imageUrl}
+                            alt={project.title}
+                            fill
+                            className="object-cover group-hover:scale-105 transition-transform duration-300"
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                        </>
+                      ) : (
+                        <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-accent/10 flex items-center justify-center">
+                          <IconComponent className={`text-6xl ${iconColor}`} />
+                        </div>
+                      )}
+                      {project.featured && (
+                        <Badge className="absolute top-2 right-2">
+                          Destacado
+                        </Badge>
+                      )}
+                    </div>
+                  </Link>
               <CardHeader className="pb-4">
                 <div className="space-y-2">
                   <CardTitle className="line-clamp-2 group-hover:text-primary transition-colors">
@@ -123,42 +168,47 @@ export default function ProjectsPage() {
                   )}
                 </div>
                 
-                <div className="flex gap-2">
-                  {project.githubUrl && (
-                    <Button asChild size="sm" variant="outline" className="flex-1">
-                      <Link 
-                        href={project.githubUrl} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="gap-2"
-                      >
-                        <Github className="h-4 w-4" />
-                        Código
-                      </Link>
-                    </Button>
-                  )}
-                  {project.liveUrl && (
-                    <Button asChild size="sm" variant="outline" className="flex-1">
-                      <Link 
-                        href={project.liveUrl} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="gap-2"
-                      >
-                        <ExternalLink className="h-4 w-4" />
-                        Demo
-                      </Link>
-                    </Button>
-                  )}
-                  {!project.githubUrl && !project.liveUrl && (
-                    <Badge variant="outline" className="flex-1 justify-center">
-                      En desarrollo
-                    </Badge>
-                  )}
+                <div className="space-y-2">
+                  <Button asChild size="sm" className="w-full">
+                    <Link href={`/projects/${project.slug}`}>
+                      Ver Detalles
+                    </Link>
+                  </Button>
+                  
+                  <div className="flex gap-2">
+                    {project.githubUrl && (
+                      <Button asChild size="sm" variant="outline" className="flex-1">
+                        <Link 
+                          href={project.githubUrl} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="gap-2"
+                        >
+                          <Github className="h-4 w-4" />
+                          Código
+                        </Link>
+                      </Button>
+                    )}
+                    {project.liveUrl && (
+                      <Button asChild size="sm" variant="outline" className="flex-1">
+                        <Link 
+                          href={project.liveUrl} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="gap-2"
+                        >
+                          <ExternalLink className="h-4 w-4" />
+                          Demo
+                        </Link>
+                      </Button>
+                    )}
+                  </div>
                 </div>
-              </CardContent>
-            </Card>
-          ))}
+                </CardContent>
+              </Card>
+            </motion.div>
+            )
+          })}
         </div>
 
         {/* No results */}

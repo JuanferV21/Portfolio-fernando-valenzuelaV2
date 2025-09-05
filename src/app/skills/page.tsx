@@ -6,7 +6,15 @@ import Balancer from "react-wrap-balancer";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { MotionSection, FadeUpDiv } from "@/components/site/MotionSection";
+import { 
+  SiSharp, SiPython, SiLaravel, SiReact, SiNextdotjs, SiNodedotjs, 
+  SiMysql, SiPostman, SiTypescript, SiJavascript, SiTailwindcss,
+  SiBootstrap, SiGit, SiGithub, SiDocker, SiFigma
+} from "react-icons/si";
+import { Database, Code2 } from "lucide-react";
+import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { skills } from "@/data/skills";
 
 // export const metadata: Metadata = {

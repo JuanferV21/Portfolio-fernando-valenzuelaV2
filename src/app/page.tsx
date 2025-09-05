@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import Balancer from "react-wrap-balancer";
 import { Button } from "@/components/ui/button";
@@ -8,30 +9,37 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { DownloadCV } from "@/components/site/DownloadCV";
 import { MotionSection, FadeUpDiv } from "@/components/site/MotionSection";
-import { ArrowRight, Code, Database, Globe } from "lucide-react";
+import { ArrowRight } from "lucide-react";
+import { SiSharp, SiPython, SiLaravel, SiReact } from "react-icons/si";
+import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { profile } from "@/data/profile";
 import { getFeaturedProjects } from "@/data/projects";
 
 export default function HomePage() {
   const featuredProjects = getFeaturedProjects();
+  const shouldReduceMotion = useReducedMotion();
+  
   const mainStacks = [
     {
-      icon: Code,
+      icon: SiSharp,
       name: "C# / .NET",
       description: "Desarrollo backend robusto con ASP.NET Core, Entity Framework y arquitecturas escalables",
-      technologies: ["C#", "ASP.NET Core", "Entity Framework", "Web APIs"]
+      technologies: ["C#", "ASP.NET Core", "Entity Framework", "Web APIs"],
+      color: "text-purple-500"
     },
     {
-      icon: Database,
+      icon: SiPython,
       name: "Python",
       description: "Análisis de datos, automatización y desarrollo web con frameworks modernos",
-      technologies: ["Python", "Pandas", "Flask", "Django", "Selenium"]
+      technologies: ["Python", "Pandas", "Flask", "Django", "Selenium"],
+      color: "text-yellow-500"
     },
     {
-      icon: Globe,
+      icon: SiReact,
       name: "Laravel & React",
       description: "Full-stack development con PHP/Laravel backend y React/TypeScript frontend",
-      technologies: ["Laravel", "React", "TypeScript", "MySQL"]
+      technologies: ["Laravel", "React", "TypeScript", "MySQL"],
+      color: "text-blue-500"
     }
   ];
 
@@ -80,11 +88,27 @@ export default function HomePage() {
         animate="visible"
         variants={heroVariants}
       >
-        {/* Background Elements */}
+        {/* Background Elements - Static */}
         <div className="absolute inset-0 -z-10">
-          <div className="absolute top-1/4 left-1/4 w-72 h-72 bg-primary/10 rounded-full blur-3xl animate-pulse-slow" />
-          <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-accent/10 rounded-full blur-3xl animate-pulse-slow" style={{ animationDelay: '2s' }} />
-          <div className="grid-pattern opacity-30" />
+          <div className="absolute top-1/4 left-1/4 w-72 h-72 bg-primary/5 rounded-full blur-3xl" />
+          <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-accent/5 rounded-full blur-3xl" />
+          <div 
+            className="absolute inset-0 opacity-[0.02]" 
+            style={{
+              backgroundImage: `repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 98px,
+                hsl(var(--border)) 100px
+              ),
+              repeating-linear-gradient(
+                90deg,
+                transparent,
+                transparent 98px,
+                hsl(var(--border)) 100px
+              )`
+            }}
+          />
         </div>
 
         <div className="grid gap-6 lg:grid-cols-2 lg:gap-12 xl:grid-cols-2 items-center">
@@ -154,36 +178,16 @@ export default function HomePage() {
             variants={avatarVariants}
           >
             <div className="relative">
+              {/* Static background gradient */}
+              <div className="w-72 h-72 md:w-80 md:h-80 bg-gradient-to-br from-primary/10 to-accent/10 rounded-full blur-2xl absolute inset-0" />
               <motion.div 
-                className="w-72 h-72 md:w-80 md:h-80 bg-gradient-to-br from-primary to-accent rounded-full opacity-20 blur-3xl absolute inset-0"
-                animate={{ 
-                  scale: [1, 1.1, 1],
-                  rotate: [0, 180, 360]
-                }}
-                transition={{ 
-                  duration: 8,
-                  repeat: Infinity,
-                  ease: "linear"
-                }}
-              />
-              <motion.div 
-                className="relative w-72 h-72 md:w-80 md:h-80 bg-card/50 backdrop-blur-sm border rounded-full flex items-center justify-center hover-glow"
-                whileHover={{ scale: 1.05, rotateY: 15 }}
+                className="relative w-72 h-72 md:w-80 md:h-80 bg-card/50 backdrop-blur-sm border rounded-full flex items-center justify-center hover-lift"
+                whileHover={shouldReduceMotion ? {} : { scale: 1.02 }}
                 transition={{ type: "spring", stiffness: 300, damping: 20 }}
               >
-                <motion.div 
-                  className="text-6xl md:text-7xl"
-                  animate={{ 
-                    rotateY: [0, 10, -10, 0]
-                  }}
-                  transition={{ 
-                    duration: 4,
-                    repeat: Infinity,
-                    ease: "easeInOut"
-                  }}
-                >
+                <div className="text-6xl md:text-7xl">
                   👨‍💻
-                </motion.div>
+                </div>
               </motion.div>
             </div>
           </motion.div>
@@ -215,20 +219,29 @@ export default function HomePage() {
                   <Card className="overflow-hidden group hover:shadow-xl transition-all duration-300 hover-glow">
                     <motion.div 
                       className="aspect-video bg-muted relative overflow-hidden"
-                      whileHover={{ scale: 1.05 }}
+                      whileHover={shouldReduceMotion ? {} : { scale: 1.02 }}
                       transition={{ duration: 0.3 }}
                     >
-                      <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-accent/10 flex items-center justify-center">
-                        <motion.div 
-                          className="text-4xl"
-                          whileHover={{ scale: 1.2, rotate: 15 }}
-                          transition={{ type: "spring", stiffness: 400, damping: 10 }}
-                        >
-                          {project.category === "csharp" ? "💜" : 
-                           project.category === "python" ? "🐍" : 
-                           project.category === "laravel" ? "🔺" : "⚛️"}
-                        </motion.div>
-                      </div>
+                      {project.imageUrl ? (
+                        <>
+                          <Image
+                            src={project.imageUrl}
+                            alt={project.title}
+                            fill
+                            className="object-cover"
+                            priority={index < 2}
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                        </>
+                      ) : (
+                        <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-accent/10 flex items-center justify-center">
+                          <div className="text-4xl">
+                            {project.category === "csharp" ? "💜" : 
+                             project.category === "python" ? "🐍" : 
+                             project.category === "laravel" ? "🔺" : "⚛️"}
+                          </div>
+                        </div>
+                      )}
                     </motion.div>
                     <CardHeader>
                       <CardTitle className="line-clamp-1 group-hover:text-primary transition-colors">
@@ -318,10 +331,10 @@ export default function HomePage() {
                     <Card className="text-center hover:shadow-xl transition-all duration-300 hover-glow bg-card/50 backdrop-blur-sm">
                       <CardHeader>
                         <motion.div
-                          whileHover={{ scale: 1.1, rotate: 5 }}
+                          whileHover={shouldReduceMotion ? {} : { scale: 1.1 }}
                           transition={{ type: "spring", stiffness: 400, damping: 10 }}
                         >
-                          <Icon className="h-12 w-12 mx-auto mb-4 text-primary" />
+                          <Icon className={`h-12 w-12 mx-auto mb-4 ${stack.color}`} />
                         </motion.div>
                         <CardTitle className="group-hover:text-primary transition-colors">
                           {stack.name}

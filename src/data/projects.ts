@@ -1,18 +1,37 @@
 export interface Project {
   id: string;
+  slug: string;
   title: string;
   description: string;
   longDescription: string;
+  features?: string[];
   technologies: string[];
   category: "csharp" | "python" | "laravel" | "react";
   githubUrl?: string;
   liveUrl?: string;
   imageUrl: string;
+  gallery?: string[];
   featured: boolean;
   completedAt: string;
 }
 
-export const projects: Project[] = [
+// Helper function to create slug from title
+function createSlug(title: string): string {
+  return title
+    .toLowerCase()
+    .replace(/[áÁ]/g, 'a')
+    .replace(/[éÉ]/g, 'e')
+    .replace(/[íÍ]/g, 'i')
+    .replace(/[óÓ]/g, 'o')
+    .replace(/[úÚ]/g, 'u')
+    .replace(/[ñÑ]/g, 'n')
+    .replace(/[^a-z0-9\s-]/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/--+/g, '-')
+    .trim();
+}
+
+const projectsRaw: Omit<Project, 'slug'>[] = [
   {
     id: "sistema-inventario-net",
     title: "Sistema de Inventario Empresarial",
@@ -116,6 +135,12 @@ export const projects: Project[] = [
   }
 ];
 
+// Transform raw projects to add slugs
+export const projects: Project[] = projectsRaw.map(project => ({
+  ...project,
+  slug: createSlug(project.title)
+}));
+
 export const getProjectsByCategory = (category: Project["category"]) => {
   return projects.filter(project => project.category === category);
 };
@@ -126,4 +151,8 @@ export const getFeaturedProjects = () => {
 
 export const getProjectById = (id: string) => {
   return projects.find(project => project.id === id);
+};
+
+export const getProjectBySlug = (slug: string) => {
+  return projects.find(project => project.slug === slug);
 };

@@ -5,7 +5,6 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Toaster } from "sonner";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
-import { SmoothScrollProvider } from "@/components/site/SmoothScroll";
 import { CommandPalette } from "@/components/site/CommandPalette";
 import "@/styles/globals.css";
 
@@ -59,9 +58,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="es" className="dark" suppressHydrationWarning>
-      <body className={inter.variable}>
-        <SmoothScrollProvider />
+    <html lang="es" className="dark scroll-smooth" suppressHydrationWarning>
+      <body className={`${inter.variable} bg-background text-foreground antialiased`}>
         <div className="relative min-h-screen flex flex-col">
           <Header />
           <main className="flex-1">
@@ -69,6 +67,7 @@ export default function RootLayout({
           </main>
           <Footer />
         </div>
+        <CommandPalette />
         <Toaster 
           theme="dark"
           position="bottom-right"

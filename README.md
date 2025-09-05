@@ -4,15 +4,16 @@ Un portafolio profesional moderno desarrollado con Next.js 14, TypeScript, Tailw
 
 ## ✨ Características
 
-- **🌙 Modo oscuro únicamente** - Diseño elegante y profesional
-- **⚡ Next.js 14** - App Router con Server Components
-- **🎨 Tailwind CSS + shadcn/ui** - Componentes modernos sobre Radix UI
-- **📱 Completamente responsivo** - Optimizado para todos los dispositivos
+- **🌙 Modo oscuro elegante** - Diseño profesional optimizado
+- **⚡ Rendimiento mejorado** - Scroll nativo, animaciones optimizadas, useReducedMotion
+- **🎨 UI moderna** - React Icons, Tailwind CSS + shadcn/ui, hover effects
+- **📱 Completamente responsivo** - Mobile-first design
 - **🔍 SEO optimizado** - Meta tags, sitemap, robots.txt
-- **📧 Formulario de contacto** - Server Actions con integración opcional de Resend
-- **🧪 Testing** - Jest + Testing Library configurado
-- **📊 Análisis de datos** - Proyectos con Python y visualizaciones
-- **🚀 Ready para deploy** - Configurado para Vercel
+- **📧 Formulario real** - Validación Zod + Server Actions con Resend
+- **🛠️ Páginas dinámicas** - Proyectos individuales con generateStaticParams
+- **📝 Blog con MDX** - Soporte completo para contenido dinámico
+- **⌨️ Command Palette** - Navegación rápida con ⌘K
+- **♿ Accesibilidad total** - WCAG AA compliant
 
 ## 🛠️ Stack Tecnológico
 
