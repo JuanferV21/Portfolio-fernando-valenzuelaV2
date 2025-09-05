@@ -1,7 +1,7 @@
 "use client";
 
 import { Metadata } from "next";
-import { motion } from "framer-motion";
+import { motion, Variants } from "framer-motion";
 import Balancer from "react-wrap-balancer";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -71,7 +71,7 @@ export default function ExperiencePage() {
     return bDate.getTime() - aDate.getTime();
   });
 
-  const timelineVariants = {
+  const timelineVariants: Variants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
@@ -81,7 +81,7 @@ export default function ExperiencePage() {
     }
   };
 
-  const itemVariants = {
+  const itemVariants: Variants = {
     hidden: { 
       opacity: 0, 
       x: -50,
@@ -93,18 +93,18 @@ export default function ExperiencePage() {
       scale: 1,
       transition: {
         duration: 0.6,
-        ease: "easeOut"
+        ease: [0.4, 0, 0.2, 1] as [number, number, number, number]
       }
     }
   };
 
-  const lineVariants = {
-    hidden: { height: 0 },
+  const lineVariants: Variants = {
+    hidden: { height: "0%" },
     visible: {
       height: "100%",
       transition: {
         duration: 1.5,
-        ease: "easeInOut"
+        ease: [0.4, 0, 0.2, 1] as [number, number, number, number]
       }
     }
   };

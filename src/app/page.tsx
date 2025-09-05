@@ -52,7 +52,7 @@ export default function HomePage() {
       y: 0,
       transition: {
         duration: 0.8,
-        ease: "easeOut"
+        ease: [0.4, 0, 0.2, 1] as [number, number, number, number]
       }
     }
   };
@@ -65,7 +65,7 @@ export default function HomePage() {
       rotateY: 0,
       transition: {
         duration: 1,
-        ease: "easeOut",
+        ease: [0.4, 0, 0.2, 1] as [number, number, number, number],
         delay: 0.5
       }
     }
